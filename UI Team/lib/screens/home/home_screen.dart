@@ -9,22 +9,26 @@ import 'components/special_offers.dart';
 class HomeScreen extends StatelessWidget {
   static String routeName = "/home";
 
-  const HomeScreen({super.key});
+  final List<Map<String, dynamic>> selectedCategories;
+
+
+  const HomeScreen({super.key, required this.selectedCategories});
+
   @override
   Widget build(BuildContext context) {
-    return const Scaffold(
+    return Scaffold(
       body: SafeArea(
         child: SingleChildScrollView(
-          padding: EdgeInsets.symmetric(vertical: 16),
+          padding: const EdgeInsets.symmetric(vertical: 16),
           child: Column(
             children: [
-              HomeHeader(),
-              DiscountBanner(),
-              Categories(),
-              SpecialOffers(),
-              SizedBox(height: 20),
-              PopularProducts(),
-              SizedBox(height: 20),
+              const HomeHeader(),
+              const DiscountBanner(),
+              Categories(selectedCategories: selectedCategories),
+              const SpecialOffers(),
+              const SizedBox(height: 20),
+              const PopularProducts(),
+              const SizedBox(height: 20),
             ],
           ),
         ),
