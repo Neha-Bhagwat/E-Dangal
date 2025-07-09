@@ -3,7 +3,10 @@ import 'package:flutter/material.dart';
 import '../../../components/custom_surfix_icon.dart';
 import '../../../components/form_error.dart';
 import '../../../constants.dart';
-import '../../home/home_screen.dart';
+import '../../category_selection/category_selection_screen.dart';
+
+
+
 
 class CompleteProfileForm extends StatefulWidget {
   const CompleteProfileForm({super.key});
@@ -183,7 +186,7 @@ class _CompleteProfileFormState extends State<CompleteProfileForm> {
               if (_formKey.currentState!.validate()) {
                 Navigator.push(
                   context,
-                  MaterialPageRoute(builder: (context) => HomeScreen()),
+                  MaterialPageRoute(builder: (context) => const CategorySelectionScreen()),
                 );
               }
             },
