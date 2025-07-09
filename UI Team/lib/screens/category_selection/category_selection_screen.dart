@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import '../home/home_screen.dart';
 
-
 class CategorySelectionScreen extends StatefulWidget {
   const CategorySelectionScreen({super.key});
 
@@ -11,24 +10,26 @@ class CategorySelectionScreen extends StatefulWidget {
 
 class _CategorySelectionScreenState extends State<CategorySelectionScreen> {
   final List<Map<String, String>> categories = [
-    {"name": "Electronics", "icon": "💻"},
-    {"name": "Fashion", "icon": "👗"},
-    {"name": "Food & Drinks", "icon": "🍔"},
-    {"name": "Books", "icon": "📚"},
-    {"name": "Fitness", "icon": "🏋️"},
-    {"name": "Beauty", "icon": "💄"},
-    {"name": "Home Decor", "icon": "🛋️"},
-    {"name": "Automobiles", "icon": "🚗"},
-    {"name": "Travel", "icon": "✈️"},
+    {"name": "Electronics", "image": "assets/images/electronics.jpg"},
+    {"name": "Fashion", "image": "assets/images/fashion.jpg"},
+    {"name": "Drinks", "image": "assets/images/drinks.jpg"},
+    {"name": "Education", "image": "assets/images/education.png"},
+    {"name": "FMCG", "image": "assets/images/fmcg.jpg"},
+    {"name": "Beauty", "image": "assets/images/Beauty.jpg"},
+    {"name": "Healthcare", "image": "assets/images/healthcare.jpg"},
+    {"name": "Automobiles", "image": "assets/images/automobiles.jpg"},
+    {"name": "Hygiene", "image": "assets/images/hygiene.png"},
+    {"name": "Sports", "image": "assets/images/sports.png"},
   ];
 
-  final Set<String> selectedCategories = {};
+  final List<Map<String, String>> selectedCategories = [];
   String searchQuery = "";
 
-  void toggleSelection(String category) {
+  void toggleSelection(Map<String, String> category) {
     setState(() {
-      if (selectedCategories.contains(category)) {
-        selectedCategories.remove(category);
+      final exists = selectedCategories.any((c) => c['name'] == category['name']);
+      if (exists) {
+        selectedCategories.removeWhere((c) => c['name'] == category['name']);
       } else {
         if (selectedCategories.length < 6) {
           selectedCategories.add(category);
@@ -48,59 +49,89 @@ class _CategorySelectionScreenState extends State<CategorySelectionScreen> {
     return Scaffold(
       appBar: AppBar(
         title: const Text("Select Your Interests"),
-        backgroundColor: Colors.blueAccent,
+        backgroundColor: Colors.white,
+        elevation: 0,
+        iconTheme: const IconThemeData(color: Colors.black),
+        titleTextStyle: const TextStyle(color: Colors.black, fontSize: 18, fontWeight: FontWeight.bold),
       ),
-      body: Padding(
-        padding: const EdgeInsets.all(16.0),
-        child: Column(
-          crossAxisAlignment: CrossAxisAlignment.start,
-          children: [
-            const Text(
-              "Choose up to 6 categories",
-              style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
-            ),
-            const SizedBox(height: 10),
-            TextField(
-              onChanged: (value) => setState(() => searchQuery = value),
-              decoration: InputDecoration(
-                hintText: "Search categories...",
-                prefixIcon: const Icon(Icons.search),
-                border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+      body: SafeArea(
+        child: Padding(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text(
+                "Choose up to 6 categories",
+                style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold),
               ),
-            ),
-            const SizedBox(height: 10),
-            Expanded(
-              child: SingleChildScrollView(
-                child: Wrap(
-                  spacing: 10,
-                  runSpacing: 10,
+              const SizedBox(height: 10),
+              TextField(
+                onChanged: (value) => setState(() => searchQuery = value),
+                decoration: InputDecoration(
+                  hintText: "Search categories...",
+                  prefixIcon: const Icon(Icons.search),
+                  border: OutlineInputBorder(borderRadius: BorderRadius.circular(12)),
+                ),
+              ),
+              const SizedBox(height: 10),
+              Expanded(
+                child: GridView.count(
+                  crossAxisCount: 3,
+                  crossAxisSpacing: 10,
+                  mainAxisSpacing: 10,
+                  childAspectRatio: 0.85,
                   children: filteredCategories.map((category) {
                     final name = category['name']!;
-                    final icon = category['icon']!;
-                    final isSelected = selectedCategories.contains(name);
+                    final imagePath = category['image']!;
+                    final isSelected = selectedCategories.any((c) => c['name'] == name);
 
                     return GestureDetector(
-                      onTap: () => toggleSelection(name),
+                      onTap: () => toggleSelection(category),
                       child: Container(
-                        width: MediaQuery.of(context).size.width / 3 - 24,
-                        padding: const EdgeInsets.all(10),
                         decoration: BoxDecoration(
-                          color: isSelected ? Colors.blueAccent : Colors.grey[200],
+                          color: isSelected ? const Color(0xFFFF7643) : Colors.white,
                           borderRadius: BorderRadius.circular(12),
-                          border: Border.all(color: Colors.blueAccent),
+                          border: Border.all(color: const Color(0xFFFF7643), width: isSelected ? 2 : 1),
+                          boxShadow: [
+                            BoxShadow(
+                              color: Colors.black.withOpacity(0.05),
+                              blurRadius: 4,
+                              offset: const Offset(2, 2),
+                            )
+                          ],
                         ),
                         child: Column(
-                          mainAxisSize: MainAxisSize.min,
+                          crossAxisAlignment: CrossAxisAlignment.center,
+                          mainAxisAlignment: MainAxisAlignment.center,
                           children: [
-                            Text(icon, style: const TextStyle(fontSize: 24)),
-                            const SizedBox(height: 5),
-                            Text(
-                              name,
-                              textAlign: TextAlign.center,
-                              style: TextStyle(
-                                color: isSelected ? Colors.white : Colors.black,
-                                fontWeight: FontWeight.bold,
-                                fontSize: 12,
+                            Expanded(
+                              flex: 5,
+                              child: Padding(
+                                padding: const EdgeInsets.all(4.0),
+                                child: ClipRRect(
+                                  borderRadius: BorderRadius.circular(8),
+                                  child: Image.asset(
+                                    imagePath,
+                                    fit: BoxFit.cover,
+                                    width: double.infinity,
+                                  ),
+                                ),
+                              ),
+                            ),
+                            const SizedBox(height: 4),
+                            Expanded(
+                              flex: 3,
+                              child: Padding(
+                                padding: const EdgeInsets.symmetric(horizontal: 4),
+                                child: Text(
+                                  name,
+                                  textAlign: TextAlign.center,
+                                  style: TextStyle(
+                                    color: isSelected ? Colors.white : Colors.black,
+                                    fontWeight: FontWeight.bold,
+                                    fontSize: 16,
+                                  ),
+                                ),
                               ),
                             ),
                           ],
@@ -110,30 +141,36 @@ class _CategorySelectionScreenState extends State<CategorySelectionScreen> {
                   }).toList(),
                 ),
               ),
-            ),
-            const SizedBox(height: 10),
-            Row(
-              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-              children: [
-                Text("${selectedCategories.length} of 6 selected"),
-                ElevatedButton(
-                  onPressed: selectedCategories.length >= 6
-                      ? () {
-                    Navigator.pushReplacement(
-                      context,
-                      MaterialPageRoute(
-                          builder: (context) => const HomeScreen()),
-                    );
-                  }
-                      : null,
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: Colors.blueAccent,
+              const SizedBox(height: 10),
+              Row(
+                mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                children: [
+                  Text("${selectedCategories.length} of 6 selected"),
+                  SizedBox(
+                    width: 120,
+                    child: ElevatedButton(
+                      onPressed: selectedCategories.length >= 6
+                          ? () {
+                        Navigator.pushReplacement(
+                          context,
+                          MaterialPageRoute(
+                            builder: (context) => HomeScreen(
+                              selectedCategories: selectedCategories,
+                            ),
+                          ),
+                        );
+                      }
+                          : null,
+                      style: ElevatedButton.styleFrom(
+                        backgroundColor: const Color(0xFFFF7643),
+                      ),
+                      child: const Text("Continue"),
+                    ),
                   ),
-                  child: const Text("Continue"),
-                )
-              ],
-            )
-          ],
+                ],
+              )
+            ],
+          ),
         ),
       ),
     );
