@@ -1,122 +1,188 @@
 import 'package:flutter/material.dart';
-import 'package:shop_app/screens/products/products_screen.dart';
+import 'package:confetti/confetti.dart';
+import 'dart:math';
 
-import 'section_title.dart';
+class SpecialOffers extends StatefulWidget {
+  final int questionsAnswered;
 
-class SpecialOffers extends StatelessWidget {
   const SpecialOffers({
     Key? key,
+    required this.questionsAnswered,
   }) : super(key: key);
 
   @override
+  State<SpecialOffers> createState() => _SpecialOffersState();
+}
+
+class _SpecialOffersState extends State<SpecialOffers> {
+  late ConfettiController _confettiController;
+
+  final List<Map<String, dynamic>> earnedRewards = [
+    {"title": "Flipkart ₹100 Coupon", "threshold": 10},
+    {"title": "Amazon ₹50 Coupon", "threshold": 15},
+  ];
+
+  final List<Map<String, dynamic>> upcomingRewards = [
+    {"title": "Myntra ₹100 Coupon", "threshold": 20},
+    {"title": "Zomato ₹75 Coupon", "threshold": 25},
+  ];
+
+  @override
+  void initState() {
+    super.initState();
+    _confettiController =
+        ConfettiController(duration: const Duration(seconds: 1));
+  }
+
+  @override
+  void dispose() {
+    _confettiController.dispose();
+    super.dispose();
+  }
+
+  void triggerConfetti() {
+    _confettiController.play();
+  }
+
+  @override
   Widget build(BuildContext context) {
-    return Column(
+    return Stack(
       children: [
-        Padding(
-          padding: const EdgeInsets.symmetric(horizontal: 20),
-          child: SectionTitle(
-            title: "Special for you",
-            press: () {},
-          ),
+        Column(
+          crossAxisAlignment: CrossAxisAlignment.start,
+          children: [
+            const Padding(
+              padding: EdgeInsets.symmetric(horizontal: 20),
+              child: Text(
+                "🎁 Your Rewards",
+                style: TextStyle(
+                  fontSize: 24,
+                  fontWeight: FontWeight.bold,
+                  color: Color(0xFF4A3298),
+                ),
+              ),
+            ),
+            const SizedBox(height: 10),
+            SingleChildScrollView(
+              scrollDirection: Axis.horizontal,
+              padding: const EdgeInsets.only(left: 20),
+              child: Row(
+                children: [
+                  // Earned Rewards
+                  ...earnedRewards.map((reward) {
+                    double progress = 1.0; // Fully completed
+                    return GestureDetector(
+                      onTap: triggerConfetti,
+                      child: rewardCard(
+                        title: reward["title"],
+                        subtitle: "Claimed ✅",
+                        icon: Icons.emoji_events,
+                        iconColor: Colors.greenAccent,
+                        progress: progress,
+                        progressColor: Colors.greenAccent,
+                      ),
+                    );
+                  }),
+
+                  // Upcoming Rewards
+                  ...upcomingRewards.map((reward) {
+                    int threshold = reward["threshold"];
+                    int answered = widget.questionsAnswered;
+                    int remaining = threshold - answered;
+                    double progress = (answered / threshold).clamp(0.0, 1.0);
+
+                    return rewardCard(
+                      title: reward["title"],
+                      subtitle: "Answer $remaining more",
+                      icon: Icons.lock_outline,
+                      iconColor: Colors.orangeAccent,
+                      progress: progress,
+                      progressColor: Colors.orangeAccent,
+                    );
+                  }),
+
+                  const SizedBox(width: 20),
+                ],
+              ),
+            ),
+          ],
         ),
-        SingleChildScrollView(
-          scrollDirection: Axis.horizontal,
-          child: Row(
-            children: [
-              SpecialOfferCard(
-                image: "assets/images/Image Banner 2.png",
-                category: "Smartphone",
-                numOfBrands: 18,
-                press: () {
-                  Navigator.pushNamed(context, ProductsScreen.routeName);
-                },
-              ),
-              SpecialOfferCard(
-                image: "assets/images/Image Banner 3.png",
-                category: "Fashion",
-                numOfBrands: 24,
-                press: () {
-                  Navigator.pushNamed(context, ProductsScreen.routeName);
-                },
-              ),
-              const SizedBox(width: 20),
-            ],
+        Align(
+          alignment: Alignment.topCenter,
+          child: ConfettiWidget(
+            confettiController: _confettiController,
+            blastDirection: -pi / 2,
+            maxBlastForce: 15,
+            minBlastForce: 10,
+            emissionFrequency: 0.05,
+            numberOfParticles: 20,
+            gravity: 0.2,
           ),
         ),
       ],
     );
   }
-}
 
-class SpecialOfferCard extends StatelessWidget {
-  const SpecialOfferCard({
-    Key? key,
-    required this.category,
-    required this.image,
-    required this.numOfBrands,
-    required this.press,
-  }) : super(key: key);
-
-  final String category, image;
-  final int numOfBrands;
-  final GestureTapCallback press;
-
-  @override
-  Widget build(BuildContext context) {
-    return Padding(
-      padding: const EdgeInsets.only(left: 20),
-      child: GestureDetector(
-        onTap: press,
-        child: SizedBox(
-          width: 242,
-          height: 100,
-          child: ClipRRect(
-            borderRadius: BorderRadius.circular(20),
-            child: Stack(
-              children: [
-                Image.asset(
-                  image,
-                  fit: BoxFit.cover,
-                ),
-                Container(
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.topCenter,
-                      end: Alignment.bottomCenter,
-                      colors: [
-                        Colors.black54,
-                        Colors.black38,
-                        Colors.black26,
-                        Colors.transparent,
-                      ],
+  Widget rewardCard({
+    required String title,
+    required String subtitle,
+    required IconData icon,
+    required Color iconColor,
+    required double progress,
+    required Color progressColor,
+  }) {
+    return Container(
+      width: 240,
+      margin: const EdgeInsets.only(right: 15),
+      padding: const EdgeInsets.all(18),
+      decoration: BoxDecoration(
+        color: const Color(0xFF4A3298),
+        borderRadius: BorderRadius.circular(20),
+      ),
+      child: Column(
+        mainAxisSize: MainAxisSize.min,
+        children: [
+          Row(
+            children: [
+              Icon(icon, size: 38, color: iconColor),
+              const SizedBox(width: 14),
+              Expanded(
+                child: Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    Text(
+                      title,
+                      style: const TextStyle(
+                        color: Colors.white,
+                        fontSize: 17,
+                        fontWeight: FontWeight.bold,
+                      ),
                     ),
-                  ),
-                ),
-                Padding(
-                  padding: const EdgeInsets.symmetric(
-                    horizontal: 15,
-                    vertical: 10,
-                  ),
-                  child: Text.rich(
-                    TextSpan(
-                      style: const TextStyle(color: Colors.white),
-                      children: [
-                        TextSpan(
-                          text: "$category\n",
-                          style: const TextStyle(
-                            fontSize: 18,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        TextSpan(text: "$numOfBrands Brands")
-                      ],
+                    const SizedBox(height: 6),
+                    Text(
+                      subtitle,
+                      style: const TextStyle(
+                        color: Colors.white70,
+                        fontSize: 15,
+                      ),
                     ),
-                  ),
+                  ],
                 ),
-              ],
+              ),
+            ],
+          ),
+          const SizedBox(height: 12),
+          // Progress Bar
+          ClipRRect(
+            borderRadius: BorderRadius.circular(8),
+            child: LinearProgressIndicator(
+              value: progress,
+              minHeight: 8,
+              backgroundColor: Colors.white24,
+              valueColor: AlwaysStoppedAnimation<Color>(progressColor),
             ),
           ),
-        ),
+        ],
       ),
     );
   }
