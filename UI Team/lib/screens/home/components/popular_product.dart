@@ -1,57 +1,76 @@
 import 'package:flutter/material.dart';
-
-import '../../../components/product_card.dart';
-import '../../../models/Product.dart';
-import '../../details/details_screen.dart';
-import '../../products/products_screen.dart';
 import 'section_title.dart';
 
 class PopularProducts extends StatelessWidget {
   const PopularProducts({super.key});
 
+  final List<String> insights = const [
+    "📍 In Mumbai, most people prefer Dove over Lux",
+    "⭐ Colgate is the #1 choice this week",
+    "🥤 Pepsi beats Coke in Delhi this month",
+    "👟 Nike is trending among youth in Pune",
+    "🍫 Dairy Milk outshines 5 Star in Chennai",
+  ];
+
   @override
   Widget build(BuildContext context) {
     return Column(
       children: [
+        // Section Header
         Padding(
           padding: const EdgeInsets.symmetric(horizontal: 20),
           child: SectionTitle(
-            title: "Popular Products",
-            press: () {
-              Navigator.pushNamed(context, ProductsScreen.routeName);
-            },
+            title: "Popular Brands Insights",
+            press: () {},
           ),
         ),
+        const SizedBox(height: 10),
+
+        // Horizontal Scrollable Insight Cards
         SingleChildScrollView(
           scrollDirection: Axis.horizontal,
+          padding: const EdgeInsets.only(left: 20, right: 10),
           child: Row(
-            children: [
-              ...List.generate(
-                demoProducts.length,
-                (index) {
-                  if (demoProducts[index].isPopular) {
-                    return Padding(
-                      padding: const EdgeInsets.only(left: 20),
-                      child: ProductCard(
-                        product: demoProducts[index],
-                        onPress: () => Navigator.pushNamed(
-                          context,
-                          DetailsScreen.routeName,
-                          arguments: ProductDetailsArguments(
-                              product: demoProducts[index]),
-                        ),
-                      ),
-                    );
-                  }
+            children: insights.asMap().entries.map((entry) {
+              final index = entry.key;
+              final insight = entry.value;
 
-                  return const SizedBox
-                      .shrink(); // here by default width and height is 0
+              return TweenAnimationBuilder(
+                tween: Tween<double>(begin: 0, end: 1),
+                duration: Duration(milliseconds: 500 + index * 200),
+                curve: Curves.easeOut,
+                builder: (context, double value, child) {
+                  return Opacity(
+                    opacity: value,
+                    child: Transform.translate(
+                      offset: Offset(20 * (1 - value), 0),
+                      child: child,
+                    ),
+                  );
                 },
-              ),
-              const SizedBox(width: 20),
-            ],
+                child: Container(
+                  width: 280,
+                  margin: const EdgeInsets.only(right: 16),
+                  padding: const EdgeInsets.all(16),
+                  decoration: BoxDecoration(
+                    color: const Color(0xFF4A3298),
+                    borderRadius: BorderRadius.circular(16),
+                  ),
+                  child: Text(
+                    insight,
+                    style: const TextStyle(
+                      color: Colors.white,
+                      fontSize: 16,
+                      fontWeight: FontWeight.w500,
+                    ),
+                  ),
+                ),
+              );
+            }).toList(),
           ),
-        )
+        ),
+
+        const SizedBox(height: 10),
       ],
     );
   }
