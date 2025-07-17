@@ -13,21 +13,23 @@ class Categories extends StatelessWidget {
       child: Column(
         crossAxisAlignment: CrossAxisAlignment.start,
         children: [
-          Wrap(
-            spacing: 24,
-            runSpacing: 24,
-            alignment: WrapAlignment.start,
-            children: selectedCategories.map((category) {
-              return CategoryCard(
-                icon: category["image"],
-                text: category["name"],
-                press: () {
-                  ScaffoldMessenger.of(context).showSnackBar(
-                    SnackBar(content: Text("Clicked on ${category["name"]}")),
-                  );
-                },
-              );
-            }).toList(),
+          Center(
+            child: Wrap(
+              spacing: 24,
+              runSpacing: 24,
+              alignment: WrapAlignment.center, // ✅ Changed from start to center
+              children: selectedCategories.map((category) {
+                return CategoryCard(
+                  icon: category["image"],
+                  text: category["name"],
+                  press: () {
+                    ScaffoldMessenger.of(context).showSnackBar(
+                      SnackBar(content: Text("Clicked on ${category["name"]}")),
+                    );
+                  },
+                );
+              }).toList(),
+            ),
           ),
           const SizedBox(height: 24),
           Center(
@@ -36,7 +38,7 @@ class Categories extends StatelessWidget {
                 Navigator.push(
                   context,
                   MaterialPageRoute(
-                    builder: (context) => const CategorySelectionScreen(),
+                    builder: (context) => const CategorySelectionScreen(userName: '',),
                   ),
                 );
               },
@@ -115,3 +117,4 @@ class CategoryCard extends StatelessWidget {
     );
   }
 }
+
