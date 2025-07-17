@@ -19,23 +19,35 @@ class InitScreen extends StatefulWidget {
 class _InitScreenState extends State<InitScreen> {
   int currentSelectedIndex = 0;
 
+  // Sample user data (you can fetch from shared prefs or backend later)
+  final String userName = "Aarati";
+  final int streakCount = 3;
+  final int questionsAnswered = 7;
+  final List<Map<String, dynamic>> selectedCategories = [
+    {"name": "Fashion", "image": "assets/images/fashion.jpg"},
+    {"name": "Drinks", "image": "assets/images/drinks.jpg"},
+    // Add more if needed
+  ];
+
   void updateCurrentIndex(int index) {
     setState(() {
       currentSelectedIndex = index;
     });
   }
 
-  final pages = [
-    const HomeScreen(selectedCategories: []),
-    const FavoriteScreen(),
-    const Center(
-      child: Text("Chat"),
-    ),
-    const ProfileScreen()
-  ];
-
   @override
   Widget build(BuildContext context) {
+    final pages = [
+      HomeScreen(
+        userName: userName,
+        questionsAnswered: questionsAnswered,
+        selectedCategories: selectedCategories,
+      ),
+      const FavoriteScreen(),
+      const Center(child: Text("Chat")),
+      const ProfileScreen()
+    ];
+
     return Scaffold(
       body: pages[currentSelectedIndex],
       bottomNavigationBar: BottomNavigationBar(
@@ -48,73 +60,50 @@ class _InitScreenState extends State<InitScreen> {
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
               "assets/icons/Shop Icon.svg",
-              colorFilter: const ColorFilter.mode(
-                inActiveIconColor,
-                BlendMode.srcIn,
-              ),
+              colorFilter: const ColorFilter.mode(inActiveIconColor, BlendMode.srcIn),
             ),
             activeIcon: SvgPicture.asset(
               "assets/icons/Shop Icon.svg",
-              colorFilter: const ColorFilter.mode(
-                kPrimaryColor,
-                BlendMode.srcIn,
-              ),
+              colorFilter: const ColorFilter.mode(kPrimaryColor, BlendMode.srcIn),
             ),
             label: "Home",
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
               "assets/icons/Heart Icon.svg",
-              colorFilter: const ColorFilter.mode(
-                inActiveIconColor,
-                BlendMode.srcIn,
-              ),
+              colorFilter: const ColorFilter.mode(inActiveIconColor, BlendMode.srcIn),
             ),
             activeIcon: SvgPicture.asset(
               "assets/icons/Heart Icon.svg",
-              colorFilter: const ColorFilter.mode(
-                kPrimaryColor,
-                BlendMode.srcIn,
-              ),
+              colorFilter: const ColorFilter.mode(kPrimaryColor, BlendMode.srcIn),
             ),
             label: "Fav",
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
               "assets/icons/Chat bubble Icon.svg",
-              colorFilter: const ColorFilter.mode(
-                inActiveIconColor,
-                BlendMode.srcIn,
-              ),
+              colorFilter: const ColorFilter.mode(inActiveIconColor, BlendMode.srcIn),
             ),
             activeIcon: SvgPicture.asset(
               "assets/icons/Chat bubble Icon.svg",
-              colorFilter: const ColorFilter.mode(
-                kPrimaryColor,
-                BlendMode.srcIn,
-              ),
+              colorFilter: const ColorFilter.mode(kPrimaryColor, BlendMode.srcIn),
             ),
             label: "Chat",
           ),
           BottomNavigationBarItem(
             icon: SvgPicture.asset(
               "assets/icons/User Icon.svg",
-              colorFilter: const ColorFilter.mode(
-                inActiveIconColor,
-                BlendMode.srcIn,
-              ),
+              colorFilter: const ColorFilter.mode(inActiveIconColor, BlendMode.srcIn),
             ),
             activeIcon: SvgPicture.asset(
               "assets/icons/User Icon.svg",
-              colorFilter: const ColorFilter.mode(
-                kPrimaryColor,
-                BlendMode.srcIn,
-              ),
+              colorFilter: const ColorFilter.mode(kPrimaryColor, BlendMode.srcIn),
             ),
-            label: "Fav",
+            label: "Profile",
           ),
         ],
       ),
     );
   }
 }
+
