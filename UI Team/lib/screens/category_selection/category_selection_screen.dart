@@ -2,7 +2,9 @@ import 'package:flutter/material.dart';
 import '../home/home_screen.dart';
 
 class CategorySelectionScreen extends StatefulWidget {
-  const CategorySelectionScreen({super.key});
+  final String userName;
+
+  const CategorySelectionScreen({super.key, required this.userName});
 
   @override
   _CategorySelectionScreenState createState() => _CategorySelectionScreenState();
@@ -156,6 +158,7 @@ class _CategorySelectionScreenState extends State<CategorySelectionScreen> {
                           MaterialPageRoute(
                             builder: (context) => HomeScreen(
                               selectedCategories: selectedCategories,
+                              userName: widget.userName,
                             ),
                           ),
                         );
@@ -175,4 +178,3 @@ class _CategorySelectionScreenState extends State<CategorySelectionScreen> {
       ),
     );
   }
-}
