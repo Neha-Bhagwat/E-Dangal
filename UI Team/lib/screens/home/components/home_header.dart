@@ -1,33 +1,54 @@
 import 'package:flutter/material.dart';
 
-import '../../cart/cart_screen.dart';
-import 'icon_btn_with_counter.dart';
-import 'search_field.dart';
-
 class HomeHeader extends StatelessWidget {
+  final String userName;
+  final int questionsAnswered;
+
+
   const HomeHeader({
     Key? key,
+    required this.userName,
+    required this.questionsAnswered,
+
   }) : super(key: key);
 
   @override
   Widget build(BuildContext context) {
     return Padding(
-      padding: const EdgeInsets.symmetric(horizontal: 20),
+      padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 8),
       child: Row(
-        mainAxisAlignment: MainAxisAlignment.spaceBetween,
         children: [
-          const Expanded(child: SearchField()),
-          const SizedBox(width: 16),
-          IconBtnWithCounter(
-            svgSrc: "assets/icons/Cart Icon.svg",
-            press: () => Navigator.pushNamed(context, CartScreen.routeName),
+          Expanded(
+            child: Column(
+              crossAxisAlignment: CrossAxisAlignment.start,
+              children: [
+                Text(
+                  "Hi $userName 👋",
+                  style: const TextStyle(
+                    fontSize: 20,
+                    fontWeight: FontWeight.bold,
+                  ),
+                ),
+                const SizedBox(height: 4),
+                const Text(
+                  "9-day streak 🔥",
+                  style: TextStyle(
+                    fontSize: 14,
+                    color: Colors.deepOrange,
+                    fontWeight: FontWeight.w500,
+                  ),
+                ),
+                Text(
+                  "5/15 questions answered today",
+                  style: TextStyle(color: Colors.grey[700]),
+                ),
+              ],
+            ),
           ),
-          const SizedBox(width: 8),
-          IconBtnWithCounter(
-            svgSrc: "assets/icons/Bell.svg",
-            numOfitem: 3,
-            press: () {},
-          ),
+          const CircleAvatar(
+            backgroundColor: Colors.orange,
+            child: Icon(Icons.person, color: Colors.white),
+          )
         ],
       ),
     );
