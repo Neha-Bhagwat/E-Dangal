@@ -10,9 +10,15 @@ class HomeScreen extends StatelessWidget {
   static String routeName = "/home";
 
   final List<Map<String, dynamic>> selectedCategories;
+  final String userName;
+  final int questionsAnswered;
 
-
-  const HomeScreen({super.key, required this.selectedCategories});
+  const HomeScreen({
+    super.key,
+    required this.selectedCategories,
+    required this.userName,
+    this.questionsAnswered = 3, // You can update this dynamically later
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -22,10 +28,14 @@ class HomeScreen extends StatelessWidget {
           padding: const EdgeInsets.symmetric(vertical: 16),
           child: Column(
             children: [
-              const HomeHeader(),
-              const DiscountBanner(),
+              HomeHeader(
+                userName: userName,
+
+                questionsAnswered: questionsAnswered,
+              ),
+              DiscountBanner(questionsAnswered: questionsAnswered),
               Categories(selectedCategories: selectedCategories),
-              const SpecialOffers(),
+              SpecialOffers(questionsAnswered: 12), // You can make this dynamic too
               const SizedBox(height: 20),
               const PopularProducts(),
               const SizedBox(height: 20),
